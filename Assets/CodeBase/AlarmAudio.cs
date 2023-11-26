@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class AlarmAudio : MonoBehaviour
 {
+    private const float _maxVolume = 1f;
+    private const float _minVolume = 0;
+
     [SerializeField] private AlarmDetector _detector;
     [SerializeField] private float _speedChangeVolume;
 
@@ -27,11 +30,10 @@ public class AlarmAudio : MonoBehaviour
     private void OnTriggerWorked(bool isEnter)
     {
         if(isEnter)
-            SwitchCoroutine(out _upChangeVolumeJob, _downChangeVolumeJob, 1);
+            SwitchCoroutine(out _upChangeVolumeJob, _downChangeVolumeJob, _maxVolume);
         else
-            SwitchCoroutine(out _downChangeVolumeJob, _upChangeVolumeJob, 0);
+            SwitchCoroutine(out _downChangeVolumeJob, _upChangeVolumeJob, _minVolume);
     }
-
 
     private void SwitchCoroutine(out Coroutine included, Coroutine switchable, float targetVolume)
     {
@@ -40,6 +42,7 @@ public class AlarmAudio : MonoBehaviour
 
         included = StartCoroutine(ChangeVolume(targetVolume));
     }
+
     private IEnumerator ChangeVolume(float targetVolume)
     {
         while (_isGameEnabled)
